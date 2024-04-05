@@ -45,7 +45,19 @@ public final class ServerCore extends JavaPlugin implements Listener {
       });
       builder.
         requires(stack -> stack.getBukkitSender().hasPermission("sc.manage"))
-        .then(modNameBuilder.then(literal("start").executes(commandContext -> {
+        .then(modNameBuilder.then(literal("stop").executes(ctx -> {
+          for (Mod mod : Unsafe.getApi().mods()) {
+            if (!mod.getName().equalsIgnoreCase(ctx.getArgument("modName", String.class))) continue;
+            Bukkit.getScheduler().runTaskAsynchronously(getPlugin(getClass()), () -> {
+              mod.delete();
+
+              ctx.getSource().getBukkitSender().sendMessage(Component.text("Unloaded mod"));
+            });
+          }
+
+
+          return Command.SINGLE_SUCCESS;
+        })).then(literal("start").executes(commandContext -> {
           for (Mod mod : Unsafe.getApi().mods()) {
             if (!mod.getName().equalsIgnoreCase(commandContext.getArgument("modName", String.class))) continue;
             Bukkit.getScheduler().runTaskAsynchronously(getPlugin(getClass()), () -> {
