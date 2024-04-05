@@ -7,7 +7,7 @@ plugins {
   id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.1.1"
 }
 
-group = "de.derioo.server"
+group = "de.derioo.chals.server"
 version = "0.0.0"
 description = "Backend Server Mod Wrapper"
 
@@ -17,6 +17,11 @@ java {
 
 dependencies {
   paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
+
+  compileOnly("org.projectlombok:lombok:1.18.30")
+  annotationProcessor("org.projectlombok:lombok:1.18.30")
+  testCompileOnly("org.projectlombok:lombok:1.18.30")
+  testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
 }
 
 tasks {
@@ -36,7 +41,7 @@ tasks {
 }
 
 bukkitPluginYaml {
-  main = "de.derioo.simpleChals.server.ServerCore"
+  main = "de.derioo.chals.server.ServerCore"
   load = BukkitPluginYaml.PluginLoadOrder.STARTUP
   authors.add("Dario")
   apiVersion = "1.20"

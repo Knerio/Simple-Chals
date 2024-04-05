@@ -1,4 +1,4 @@
-package de.derioo.simpleChals.server;
+package de.derioo.chals.server;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
