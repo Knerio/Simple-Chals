@@ -9,8 +9,7 @@ import java.util.Set;
 
 public interface Api {
 
-  Set<Mod> mods() throws IOException;
 
-  Set<Mod> getCachedMods();
+  Set<Mod> mods();
 
 }

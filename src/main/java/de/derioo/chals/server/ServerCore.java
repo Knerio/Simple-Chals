@@ -38,32 +38,32 @@ public final class ServerCore extends JavaPlugin implements Listener {
 
     registerPluginBrigadierCommand("mod", (builder -> {
       RequiredArgumentBuilder<CommandSourceStack, String> modNameBuilder = argument("modName", StringArgumentType.word()).suggests((ctx, suggestionsBuilder) -> {
-        for (Mod cachedMod : Unsafe.getApi().getCachedMods()) {
+        for (Mod cachedMod : Unsafe.getApi().mods()) {
           suggestionsBuilder.suggest(cachedMod.getName());
         }
         return suggestionsBuilder.buildFuture();
       });
       builder.
-        requires(stack -> stack.getBukkitSender().hasPermission("ss.manage"))
-        .then(modNameBuilder.then(literal("start")).executes(commandContext -> {
-          for (Mod mod : Unsafe.getApi().getCachedMods()) {
+        requires(stack -> stack.getBukkitSender().hasPermission("sc.manage"))
+        .then(modNameBuilder.then(literal("start").executes(commandContext -> {
+          for (Mod mod : Unsafe.getApi().mods()) {
             if (!mod.getName().equalsIgnoreCase(commandContext.getArgument("modName", String.class))) continue;
             Bukkit.getScheduler().runTaskAsynchronously(getPlugin(getClass()), () -> {
-              try {
-                mod.load();
-              } catch (IOException | InvalidPluginException | InvalidDescriptionException e) {
-                commandContext.getSource().getBukkitSender().sendMessage(Component.text("Error occurred while loading mod"));
-                throw new RuntimeException(e);
-              }
+              mod.enable();
+
               commandContext.getSource().getBukkitSender().sendMessage(Component.text("Loaded and started mod!"));
             });
           }
           return Command.SINGLE_SUCCESS;
-        }));
+        })));
     }));
 
   }
 
+  @Override
+  public void onDisable() {
+    Unsafe.getApi().mods().forEach(Mod::delete);
+  }
 
   public void registerPluginBrigadierCommand(final String label, final Consumer<LiteralArgumentBuilder<CommandSourceStack>> command) {
     final PluginBrigadierCommand pluginBrigadierCommand = new PluginBrigadierCommand(this, label, command);

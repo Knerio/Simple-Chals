@@ -21,10 +21,17 @@ import java.util.stream.Collectors;
 
 public class ChalsAPI implements Api {
 
-  private Pair<Long, Set<Mod>> cachedMods = new Pair<>(0L, new HashSet<>());
+  private Set<Mod> cachedMods;
 
-  @Override
-  public Set<Mod> mods() throws IOException {
+  public ChalsAPI() {
+      try {
+          cachedMods = getMods();
+      } catch (IOException e) {
+          throw new RuntimeException(e);
+      }
+  }
+
+  public Set<Mod> getMods() throws IOException {
     List<String> modNames = new ArrayList<>();
 
     URL url = new URL("http://127.0.0.1:3000/mods");
@@ -52,23 +59,11 @@ public class ChalsAPI implements Api {
 
     connection.disconnect();
 
-    Set<Mod> mods = modNames.stream().map(Mod::new).collect(Collectors.toSet());
-    cachedMods = new Pair<>(System.currentTimeMillis(), mods);
-    return mods;
+      return modNames.stream().map(Mod::new).collect(Collectors.toSet());
   }
 
   @Override
-  public Set<Mod> getCachedMods()  {
-    if (cachedMods.getA() + 5000L > System.currentTimeMillis()) return cachedMods.getB();
-
-    new Thread(() -> {
-        try {
-            mods();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }).start();
-
-    return cachedMods.getB();
+  public Set<Mod> mods()  {
+    return cachedMods;
   }
 }
