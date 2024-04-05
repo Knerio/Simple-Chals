@@ -23,10 +23,10 @@ java {
 dependencies {
   paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
 
-  compileOnly("org.projectlombok:lombok:1.18.30")
-  annotationProcessor("org.projectlombok:lombok:1.18.30")
-  testCompileOnly("org.projectlombok:lombok:1.18.30")
-  testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
+  compileOnly("org.projectlombok:lombok:1.18.32")
+  annotationProcessor("org.projectlombok:lombok:1.18.32")
+  testCompileOnly("org.projectlombok:lombok:1.18.32")
+  testAnnotationProcessor("org.projectlombok:lombok:1.18.32")
 }
 
 tasks {
