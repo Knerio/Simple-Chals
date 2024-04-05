@@ -1,26 +1,20 @@
 package de.derioo.chals.server.api.types;
 
-import de.derioo.chals.server.api.Unsafe;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.file.Files;
-import java.util.Objects;
+import java.nio.file.FileSystemException;
 
 @Getter
 public class Mod {
@@ -38,10 +32,20 @@ public class Mod {
   }
 
   private void load() throws IOException, InvalidPluginException, InvalidDescriptionException {
-    if (!isDownloaded()) download();
+    if (isDownloaded()) new File(getDownloadDir(), name + ".jar").delete();
+
+    download();
     File downloadDir = getDownloadDir();
     File jar = new File(downloadDir, name + ".jar");
-    FileUtils.copyFile(jar, new File("./plugins", this.name + ".jar"));
+
+    try {
+      File dest = new File("./plugins", this.name + ".jar");
+      if (dest.exists()) dest.delete();
+      FileUtils.copyFile(jar, dest);
+    } catch (FileSystemException e) {
+      e.printStackTrace();
+    }
+
     plugin = Bukkit.getPluginManager().loadPlugin(getPluginFile());
     Bukkit.getPluginManager().disablePlugin(plugin);
   }

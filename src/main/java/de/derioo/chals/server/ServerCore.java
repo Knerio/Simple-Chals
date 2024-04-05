@@ -34,8 +34,13 @@ public final class ServerCore extends JavaPlugin implements Listener {
   public void onEnable() {
     this.getServer().getPluginManager().registerEvents(this, this);
 
-    Unsafe.setApi(new ChalsAPI());
 
+    Unsafe.setApi(new ChalsAPI());
+    registerModCommand();
+  }
+
+
+  private void registerModCommand() {
     registerPluginBrigadierCommand("mod", (builder -> {
       RequiredArgumentBuilder<CommandSourceStack, String> modNameBuilder = argument("modName", StringArgumentType.word()).suggests((ctx, suggestionsBuilder) -> {
         for (Mod cachedMod : Unsafe.getApi().mods()) {
@@ -69,7 +74,6 @@ public final class ServerCore extends JavaPlugin implements Listener {
           return Command.SINGLE_SUCCESS;
         })));
     }));
-
   }
 
   @Override

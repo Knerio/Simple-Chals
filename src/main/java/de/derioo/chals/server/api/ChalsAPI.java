@@ -24,11 +24,11 @@ public class ChalsAPI implements Api {
   private Set<Mod> cachedMods;
 
   public ChalsAPI() {
-      try {
-          cachedMods = getMods();
-      } catch (IOException e) {
-          throw new RuntimeException(e);
-      }
+    try {
+      cachedMods = getMods();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public Set<Mod> getMods() throws IOException {
@@ -59,11 +59,11 @@ public class ChalsAPI implements Api {
 
     connection.disconnect();
 
-      return modNames.stream().map(Mod::new).collect(Collectors.toSet());
+    return modNames.stream().map(Mod::new).collect(Collectors.toSet());
   }
 
   @Override
-  public Set<Mod> mods()  {
+  public Set<Mod> mods() {
     return cachedMods;
   }
 }
