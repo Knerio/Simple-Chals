@@ -8,19 +8,16 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import de.derioo.chals.server.api.ChalsAPI;
+import de.derioo.chals.server.api.Config;
 import de.derioo.chals.server.api.Unsafe;
 import de.derioo.chals.server.api.types.Mod;
-import eu.thesimplecloud.api.CloudAPI;
 import net.kyori.adventure.text.Component;
 import net.minecraft.commands.CommandSourceStack;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.world.WorldLoadEvent;
-import org.bukkit.plugin.InvalidDescriptionException;
-import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
@@ -34,6 +31,44 @@ import static net.minecraft.commands.Commands.literal;
 
 @DefaultQualifier(NonNull.class)
 public final class ServerCore extends JavaPlugin implements Listener {
+  Config global;
+  @Override
+  public void onLoad() {
+    global =  new Config(this, "global");
+    if (global.get().get("shouldreset").getAsBoolean()) {
+      try {
+        File world = new File(Bukkit.getWorldContainer(), "world");
+        File nether = new File(Bukkit.getWorldContainer(), "world_nether");
+        File end = new File(Bukkit.getWorldContainer(), "world_the_end");
+        FileUtils.deleteDirectory(world);
+        FileUtils.deleteDirectory(nether);
+        FileUtils.deleteDirectory(end);
+        world.mkdirs();
+        nether.mkdirs();
+        end.mkdirs();
+        (new File(world, "data")).mkdirs();
+        (new File(world, "datapacks")).mkdirs();
+        (new File(world, "playerdata")).mkdirs();
+        (new File(world, "poi")).mkdirs();
+        (new File(world, "region")).mkdirs();
+        (new File(nether, "data")).mkdirs();
+        (new File(nether, "datapacks")).mkdirs();
+        (new File(nether, "playerdata")).mkdirs();
+        (new File(nether, "poi")).mkdirs();
+        (new File(nether, "region")).mkdirs();
+        (new File(end, "data")).mkdirs();
+        (new File(end, "datapacks")).mkdirs();
+        (new File(end, "playerdata")).mkdirs();
+        (new File(end, "poi")).mkdirs();
+        (new File(end, "region")).mkdirs();
+        global.get().addProperty("shouldreset", false);
+        global.save();
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
   @Override
   public void onEnable() {
     this.getServer().getPluginManager().registerEvents(this, this);
@@ -41,38 +76,22 @@ public final class ServerCore extends JavaPlugin implements Listener {
 
     Unsafe.setApi(new ChalsAPI());
     registerModCommand();
-    registerWordResetCommand();
+    registerWorldResetCommand();
   }
 
-  private void registerWordResetCommand() {
+  private void registerWorldResetCommand() {
     registerPluginBrigadierCommand("worldreset", builder -> {
       builder.requires(stack -> stack.getBukkitSender().hasPermission("world.reset"))
         .executes(ctx -> {
-          clearDir(new File(CloudAPI.getInstance().getTemplateManager().getTemplateByName("Bukkit").getDirectory() + "/world"));
-          clearDir(new File(CloudAPI.getInstance().getTemplateManager().getTemplateByName("Bukkit").getDirectory() + "/world_the_nether"));
-          clearDir(new File(CloudAPI.getInstance().getTemplateManager().getTemplateByName("Bukkit").getDirectory() + "/world_the_end"));
-
-
+          ctx.getSource().getBukkitSender().sendMessage(Component.text("Resetting world"));
+          global.get().addProperty("shouldreset", true);
+          global.save();
+          Bukkit.shutdown();
           return Command.SINGLE_SUCCESS;
         });
     });
   }
 
-
-
-  private void clearDir(File file) {
-    if (file.isDirectory()) {
-      for (File listFile : file.listFiles()) {
-        clearDir(listFile);
-      }
-    }
-    file.delete();
-  }
-
-  @EventHandler
-  public void onWorldLoad(WorldLoadEvent event) {
-    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cloud copy Bukkit " + event.getWorld().getName());
-  }
 
 
   private void registerModCommand() {
@@ -113,6 +132,7 @@ public final class ServerCore extends JavaPlugin implements Listener {
 
   @Override
   public void onDisable() {
+    global.save();
     Unsafe.getApi().mods().forEach(Mod::delete);
   }
 

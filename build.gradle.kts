@@ -18,12 +18,7 @@ java {
   toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
-repositories {
-  maven {
-    name = "simplecloud"
-    url = uri("https://repo.thesimplecloud.eu/artifactory/list/gradle-release-local/")
-  }
-}
+
 
 dependencies {
   paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
@@ -32,8 +27,6 @@ dependencies {
   annotationProcessor("org.projectlombok:lombok:1.18.30")
   testCompileOnly("org.projectlombok:lombok:1.18.30")
   testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
-  compileOnly("eu.thesimplecloud.simplecloud:simplecloud-plugin:2.4.1")
-  compileOnly("eu.thesimplecloud.simplecloud:simplecloud-api:2.4.1")
 }
 
 tasks {
