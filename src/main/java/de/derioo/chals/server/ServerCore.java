@@ -10,6 +10,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import de.derioo.chals.server.api.ChalsAPI;
 import de.derioo.chals.server.api.Unsafe;
 import de.derioo.chals.server.api.types.Mod;
+import eu.thesimplecloud.api.CloudAPI;
 import net.kyori.adventure.text.Component;
 import net.minecraft.commands.CommandSourceStack;
 import org.bukkit.Bukkit;
@@ -17,6 +18,7 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -46,18 +48,17 @@ public final class ServerCore extends JavaPlugin implements Listener {
     registerPluginBrigadierCommand("worldreset", builder -> {
       builder.requires(stack -> stack.getBukkitSender().hasPermission("world.reset"))
         .executes(ctx -> {
-          for (World world : Bukkit.getWorlds()) {
-            Bukkit.unloadWorld(world, false);
-            clearDir(world.getWorldFolder());
-          }
-          new File(".", "server.properties").delete();
-          Bukkit.shutdown();
+          clearDir(new File(CloudAPI.getInstance().getTemplateManager().getTemplateByName("Bukkit").getDirectory() + "/world"));
+          clearDir(new File(CloudAPI.getInstance().getTemplateManager().getTemplateByName("Bukkit").getDirectory() + "/world_the_nether"));
+          clearDir(new File(CloudAPI.getInstance().getTemplateManager().getTemplateByName("Bukkit").getDirectory() + "/world_the_end"));
 
 
           return Command.SINGLE_SUCCESS;
         });
     });
   }
+
+
 
   private void clearDir(File file) {
     if (file.isDirectory()) {
@@ -66,6 +67,11 @@ public final class ServerCore extends JavaPlugin implements Listener {
       }
     }
     file.delete();
+  }
+
+  @EventHandler
+  public void onWorldLoad(WorldLoadEvent event) {
+    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cloud copy Bukkit " + event.getWorld().getName());
   }
 
 
