@@ -3,6 +3,7 @@
 build/
 gradle/wrapper/
 
+gradle.properties
 *.iml
 *.ipr
 *.iws

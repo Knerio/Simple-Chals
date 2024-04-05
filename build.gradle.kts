@@ -1,10 +1,13 @@
 import xyz.jpenilla.resourcefactory.bukkit.BukkitPluginYaml
 
+
+
 plugins {
   `java-library`
   id("io.papermc.paperweight.userdev") version "1.5.13"
   id("xyz.jpenilla.run-paper") version "2.2.3"
   id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.1.1"
+  id("maven-publish")
 }
 
 group = "de.derioo.chals.server"
@@ -38,6 +41,29 @@ tasks {
     options.encoding = Charsets.UTF_8.name()
   }
 
+}
+
+
+
+publishing {
+  repositories {
+    maven {
+      name = "GitHubPackages"
+      url = uri("https://maven.pkg.github.com/Knerio/Simple-Chals-Server")
+      credentials {
+        username = project.properties["GITHUB_USERNAME"].toString()
+        password = project.properties["GITHUB_TOKEN"].toString()
+      }
+    }
+  }
+  publications {
+    register<MavenPublication>("gpr") {
+      groupId = "de.derioo.chals"
+      artifactId = "api"
+      version = "0.0.3"
+      from(components["java"])
+    }
+  }
 }
 
 bukkitPluginYaml {
