@@ -50,6 +50,7 @@ public final class ServerCore extends JavaPlugin implements Listener {
             Bukkit.unloadWorld(world, false);
             clearDir(world.getWorldFolder());
           }
+          new File(".", "server.properties").delete();
           Bukkit.shutdown();
 
 

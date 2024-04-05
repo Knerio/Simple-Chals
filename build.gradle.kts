@@ -60,7 +60,7 @@ publishing {
     register<MavenPublication>("gpr") {
       groupId = "de.derioo.chals"
       artifactId = "api"
-      version = "0.0.6"
+      version = "0.0.7"
       from(components["java"])
     }
   }
