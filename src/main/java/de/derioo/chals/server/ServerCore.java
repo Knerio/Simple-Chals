@@ -13,6 +13,7 @@ import de.derioo.chals.server.api.types.Mod;
 import net.kyori.adventure.text.Component;
 import net.minecraft.commands.CommandSourceStack;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,6 +23,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.function.Consumer;
 
@@ -37,6 +39,32 @@ public final class ServerCore extends JavaPlugin implements Listener {
 
     Unsafe.setApi(new ChalsAPI());
     registerModCommand();
+    registerWordResetCommand();
+  }
+
+  private void registerWordResetCommand() {
+    registerPluginBrigadierCommand("worldreset", builder -> {
+      builder.requires(stack -> stack.getBukkitSender().hasPermission("world.reset"))
+        .executes(ctx -> {
+          for (World world : Bukkit.getWorlds()) {
+            Bukkit.unloadWorld(world, false);
+            clearDir(world.getWorldFolder());
+          }
+          Bukkit.shutdown();
+
+
+          return Command.SINGLE_SUCCESS;
+        });
+    });
+  }
+
+  private void clearDir(File file) {
+    if (file.isDirectory()) {
+      for (File listFile : file.listFiles()) {
+        clearDir(listFile);
+      }
+    }
+    file.delete();
   }
 
 
