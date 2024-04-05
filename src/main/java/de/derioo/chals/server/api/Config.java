@@ -12,11 +12,13 @@ public class Config {
 
   private final JsonObject content;
   private final Plugin plugin;
+  private final String name;
 
-  public Config(Plugin plugin) {
+  public Config(Plugin plugin, String name) {
     this.plugin = plugin;
-    new File("./plugins/sc/Timer").mkdirs();
-    File configFile = new File(new File("./plugins/sc/Timer"), "config.json");
+    this.name = name;
+    new File("./plugins/sc/" + name).mkdirs();
+    File configFile = new File(new File("./plugins/sc/" + name), "config.json");
     try {
       if (configFile.createNewFile()) {
         content = getDefault();
@@ -41,7 +43,7 @@ public class Config {
   }
 
   public void save() {
-    File configFile = new File(new File("./plugins/sc/Timer"), "config.json");
+    File configFile = new File(new File("./plugins/sc/" + name), "config.json");
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(configFile))) {
       writer.write(content.toString());
     } catch (IOException e) {
