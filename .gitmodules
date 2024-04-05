@@ -7,3 +7,6 @@
 [submodule "Simple-Chals-Backend"]
 	path = Simple-Chals-Backend
 	url = https://github.com/Knerio/Simple-Chals-Backend
+[submodule "AmpelMod"]
+	path = AmpelMod
+	url = https://github.com/Knerio/AmpelMod
