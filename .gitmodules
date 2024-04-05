@@ -1,9 +1,9 @@
 [submodule "TimerMod"]
 	path = TimerMod
 	url = https://github.com/Knerio/TimerMod
-[submodule "RandomizerMod"]
-	path = RandomizerMod
+[submodule "Randomizer-Mod"]
+	path = Randomizer-Mod
 	url = https://github.com/Knerio/Randomizer-Mod
-[submodule "Backend"]
-	path = Backend
+[submodule "Simple-Chals-Backend"]
+	path = Simple-Chals-Backend
 	url = https://github.com/Knerio/Simple-Chals-Backend
