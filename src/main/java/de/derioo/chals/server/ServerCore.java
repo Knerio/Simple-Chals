@@ -36,37 +36,7 @@ public final class ServerCore extends JavaPlugin implements Listener {
   public void onLoad() {
     global =  new Config(this, "global");
     if (global.get().get("shouldreset").getAsBoolean()) {
-      try {
-        File world = new File(Bukkit.getWorldContainer(), "world");
-        File nether = new File(Bukkit.getWorldContainer(), "world_nether");
-        File end = new File(Bukkit.getWorldContainer(), "world_the_end");
-        FileUtils.deleteDirectory(world);
-        FileUtils.deleteDirectory(nether);
-        FileUtils.deleteDirectory(end);
-        FileUtils.deleteDirectory(new File("plugins/sc"));
-        world.mkdirs();
-        nether.mkdirs();
-        end.mkdirs();
-        (new File(world, "data")).mkdirs();
-        (new File(world, "datapacks")).mkdirs();
-        (new File(world, "playerdata")).mkdirs();
-        (new File(world, "poi")).mkdirs();
-        (new File(world, "region")).mkdirs();
-        (new File(nether, "data")).mkdirs();
-        (new File(nether, "datapacks")).mkdirs();
-        (new File(nether, "playerdata")).mkdirs();
-        (new File(nether, "poi")).mkdirs();
-        (new File(nether, "region")).mkdirs();
-        (new File(end, "data")).mkdirs();
-        (new File(end, "datapacks")).mkdirs();
-        (new File(end, "playerdata")).mkdirs();
-        (new File(end, "poi")).mkdirs();
-        (new File(end, "region")).mkdirs();
-        global.get().addProperty("shouldreset", false);
-        global.save();
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
+      this.resetWorld();
     }
   }
 
@@ -138,6 +108,29 @@ public final class ServerCore extends JavaPlugin implements Listener {
   public void onDisable() {
     global.save();
     Unsafe.getApi().mods().forEach(Mod::delete);
+  }
+
+  private void resetWorld() {
+    try {
+      File world = new File(Bukkit.getWorldContainer(), "world");
+      File nether = new File(Bukkit.getWorldContainer(), "world_nether");
+      File end = new File(Bukkit.getWorldContainer(), "world_the_end");
+      File[] files = new File[]{world, nether, end};
+      for (File worldDir : files) {
+        FileUtils.deleteDirectory(worldDir);
+        worldDir.mkdirs();
+        (new File(worldDir, "data")).mkdirs();
+        (new File(worldDir, "datapacks")).mkdirs();
+        (new File(worldDir, "playerdata")).mkdirs();
+        (new File(worldDir, "poi")).mkdirs();
+        (new File(worldDir, "region")).mkdirs();
+      }
+      FileUtils.deleteDirectory(new File("plugins/sc"));
+      global.get().addProperty("shouldreset", false);
+      global.save();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public void registerPluginBrigadierCommand(final String label, final Consumer<LiteralArgumentBuilder<CommandSourceStack>> command) {
