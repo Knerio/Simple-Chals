@@ -68,7 +68,7 @@ publishing {
     register<MavenPublication>("gpr") {
       groupId = "de.derioo.chals"
       artifactId = "api"
-      version = "0.1.1"
+      version = "0.1.2"
       from(components["java"])
       artifact("build/libs/SCS.jar")
     }

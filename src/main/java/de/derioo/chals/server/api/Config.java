@@ -43,8 +43,15 @@ public class Config {
   }
 
   public void save() {
-    File configFile = new File(new File("./plugins/sc/" + name), "config.json");
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(configFile))) {
+    File dir = new File("./plugins/sc/" + name);
+    dir.mkdirs();
+    File configFile = new File(dir, "config.json");
+      try {
+          configFile.createNewFile();
+      } catch (IOException e) {
+          throw new RuntimeException(e);
+      }
+      try (BufferedWriter writer = new BufferedWriter(new FileWriter(configFile))) {
       writer.write(content.toString());
     } catch (IOException e) {
       throw new RuntimeException(e);
