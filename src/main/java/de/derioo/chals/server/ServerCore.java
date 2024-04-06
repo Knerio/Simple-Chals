@@ -43,6 +43,7 @@ public final class ServerCore extends JavaPlugin implements Listener {
         FileUtils.deleteDirectory(world);
         FileUtils.deleteDirectory(nether);
         FileUtils.deleteDirectory(end);
+        FileUtils.deleteDirectory(new File("plugins/sc"));
         world.mkdirs();
         nether.mkdirs();
         end.mkdirs();
