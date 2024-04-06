@@ -33,8 +33,8 @@ public class Mod {
 
   private void load() throws IOException, InvalidPluginException, InvalidDescriptionException {
     if (isDownloaded()) new File(getDownloadDir(), name + ".jar").delete();
-
     download();
+
     File downloadDir = getDownloadDir();
     File jar = new File(downloadDir, name + ".jar");
 
