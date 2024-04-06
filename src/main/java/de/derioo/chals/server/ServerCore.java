@@ -76,6 +76,9 @@ public final class ServerCore extends JavaPlugin implements Listener {
 
 
     Unsafe.setApi(new ChalsAPI());
+
+    Unsafe.getApi().getModByName("timer").get().enable();
+
     registerModCommand();
     registerWorldResetCommand();
   }

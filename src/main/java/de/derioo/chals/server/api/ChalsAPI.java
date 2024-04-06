@@ -13,10 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ChalsAPI implements Api {
@@ -65,5 +62,10 @@ public class ChalsAPI implements Api {
   @Override
   public Set<Mod> mods() {
     return cachedMods;
+  }
+
+  @Override
+  public Optional<Mod> getModByName(String name) {
+    return mods().stream().filter(mod -> name.equalsIgnoreCase(mod.getName())).findFirst();
   }
 }
