@@ -3,17 +3,16 @@ package de.derioo.chals.server.api;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import de.derioo.chals.server.api.types.Mod;
-import org.json.simple.JSONArray;
-import oshi.util.tuples.Pair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ChalsAPI implements Api {

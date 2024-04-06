@@ -90,7 +90,7 @@ public class Mod {
       connection.connect();
 
       try (InputStream inputStream = connection.getInputStream()) {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(downloadDir.toPath() + "/" + this.name + ".jar");) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(downloadDir.toPath() + "/" + this.name + ".jar")) {
 
           byte[] buffer = new byte[4096];
           int bytesRead;
