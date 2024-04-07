@@ -1,5 +1,5 @@
 import xyz.jpenilla.resourcefactory.bukkit.BukkitPluginYaml
-
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 
 plugins {
@@ -8,6 +8,7 @@ plugins {
   id("xyz.jpenilla.run-paper") version "2.2.3"
   id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.1.1"
   id("maven-publish")
+  id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "de.derioo.chals.server"
@@ -18,6 +19,12 @@ java {
   toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
+repositories {
+  maven {
+    name = "derioReleases"
+    url = uri("https://nexus.derioo.de/releases")
+  }
+}
 
 
 dependencies {
@@ -27,6 +34,10 @@ dependencies {
   annotationProcessor("org.projectlombok:lombok:1.18.32")
   testCompileOnly("org.projectlombok:lombok:1.18.32")
   testAnnotationProcessor("org.projectlombok:lombok:1.18.32")
+
+  implementation("com.github.stefvanschie.inventoryframework:IF:0.10.13")
+  implementation("de.derioo:inventoryframework:5.0.0")
+
 }
 
 tasks {
@@ -68,7 +79,7 @@ publishing {
     register<MavenPublication>("gpr") {
       groupId = "de.derioo.chals"
       artifactId = "api"
-      version = "0.1.2"
+      version = "0.1.17"
       from(components["java"])
       artifact("build/libs/SCS.jar")
     }
